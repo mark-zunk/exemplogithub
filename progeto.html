@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Loja Virtual Dark</title>
+<style>
+  /* Reset & base */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    background-color: #121212;
+    color: #ddd;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  a {
+    color: #0ff;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  button {
+    font-family: inherit;
+    cursor: pointer;
+  }
+  /* Header */
+  header {
+    background-color: #1f1f1f;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #333;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  header h1 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: #0ff;
+  }
+  nav button {
+    background-color: transparent;
+    border: 1.5px solid #0ff;
+    color: #0ff;
+    padding: 6px 14px;
+    margin-left: 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    font-size: 0.9rem;
+  }
+  nav button:hover {
+    background-color: #0ff;
+    color: #121212;
+  }
+  /* Carousel */
+  .carousel-container {
+    width: 100%;
+    max-width: 960px;
+    margin: 20px auto;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #0133;
+  }
+  .carousel {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+  }
+  .carousel img {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  .carousel-buttons {
+    position: relative;
+    top: -40px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  .carousel-buttons button {
+    background-color: #222;
+    border: 1px solid #0ff;
+    color: #0ff;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    padding: 0;
+    transition: background-color 0.3s ease;
+  }
+  .carousel-buttons button.active,
+  .carousel-buttons button:hover {
+    background-color: #0ff;
+  }
+  /* Brand Logos */
+  .brands-row {
+    max-width: 960px;
+    margin: 20px auto;
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    padding: 10px 0;
+    border-top: 1px solid #333;
+    border-bottom: 1px solid #333;
+  }
+  .brand-logo {
+    filter: brightness(0.7);
+    cursor: pointer;
+    max-height: 50px;
+    transition: filter 0.3s ease;
+  }
+  .brand-logo:hover,
+  .brand-logo.active {
+    filter: brightness(1);
+    transform: scale(1.1);
+  }
+  /* Products Grid */
+  .products-container {
+    max-width: 960px;
+    margin: 30px auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+    gap: 20px;
+    padding: 0 10px 30px 10px;
+  }
+  .product-card {
+    background-color: #222;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 12px #0ff6;
+    display: flex;
+    flex-direction: column;
+    color: #eee;
+    transition: background-color 0.3s ease;
+  }
+  .product-card:hover {
+    background-color: #0ff2;
+    color: #121212;
+  }
+  .product-image {
+    width: 100%;
+    height: 140px;
+    object-fit: contain;
+    background-color: #121212;
+  }
+  .product-info {
+    flex-grow: 1;
+    padding: 12px 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .product-name {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 8px;
+    min-height: 42px;
+  }
+  .product-price {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    color: #0ff;
+  }
+  .buy-btn {
+    background-color: #0ff;
+    color: #121212;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+  }
+  .buy-btn:hover {
+    background-color: #08c;
+    color: #eee;
+  }
+  /* Most Sold Row */
+  .most-sold-section {
+    max-width: 960px;
+    margin: 0 auto 40px auto;
+    padding: 10px;
+    border-top: 1px solid #333;
+  }
+  .most-sold-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #0ff;
+    margin-bottom: 14px;
+    padding-left: 10px;
+  }
+  .most-sold-list {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+  }
+  .most-sold-item {
+    background-color: #222;
+    border-radius: 14px;
+    min-width: 140px;
+    box-shadow: 0 0 8px #0ff9;
+    color: #eee;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+  }
+  .most-sold-item:hover {
+    background-color: #0ff1;
+    color: #121212;
+    transform: scale(1.05);
+  }
+  .most-sold-image {
+    width: 100%;
+    height: 110px;
+    object-fit: contain;
+    border-radius: 14px 14px 0 0;
+    background-color: #121212;
+  }
+  .most-sold-name {
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 8px 10px;
+    text-align: center;
+  }
+  /* Cart */
+  #cart-btn {
+    position: fixed;
+    right: 20px;
+    bottom: 25px;
+    background-color: #0ff;
+    border: none;
+    color: #121212;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    font-size: 1.45rem;
+    box-shadow: 0 0 20px #0ff8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 15;
+    transition: background-color 0.3s ease;
+  }
+  #cart-btn:hover {
+    background-color: #08c;
+    color: #eee;
+  }
+  #cart-count {
+    position: absolute;
+    top: 5px;
+    right: 6px;
+    background: #f00;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+  }
+  /* Cart sidebar */
+  #cart-sidebar {
+    position: fixed;
+    top: 0;
+    right: -340px;
+    width: 320px;
+    height: 100vh;
+    background-color: #222;
+    box-shadow: -4px 0 12px #0ff4;
+    transition: right 0.3s ease;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    padding: 15px 10px;
+  }
+  #cart-sidebar.active {
+    right: 0;
+  }
+  #cart-sidebar h2 {
+    color: #0ff;
+    margin: 0;
+    margin-bottom: 10px;
+    user-select: none;
+  }
+  #cart-close-btn {
+    align-self: flex-end;
+    background: none;
+    border: none;
+    color: #0ff;
+    font-weight: 700;
+    font-size: 1.4rem;
+    cursor: pointer;
+    margin-bottom: 15px;
+  }
+  .cart-item {
+    display: flex;
+    margin-bottom: 10px;
+    background-color: #121212dd;
+    padding: 8px;
+    border-radius: 8px;
+  }
+  .cart-item img {
+    width: 55px;
+    height: 50px;
+    object-fit: contain;
+    border-radius: 6px;
+  }
+  .cart-item-info {
+    margin-left: 10px;
+    flex-grow: 1;
+  }
+  .cart-item-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+  }
+  .cart-item-price {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #0ff;
+  }
+  .cart-remove-btn {
+    background: none;
+    border: none;
+    color: #f44;
+    font-weight: 700;
+    cursor: pointer;
+    align-self: center;
+    margin-left: 6px;
+    font-size: 1.1rem;
+    padding: 0 5px;
+  }
+  #cart-empty {
+    text-align: center;
+    margin-top: 30px;
+    font-style: italic;
+    color: #999;
+  }
+  /* Login/Register Modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(18,18,18,0.9);
+    backdrop-filter: blur(8px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 30;
+  }
+  .modal-overlay.active {
+    display: flex;
+  }
+  .modal {
+    background-color: #1f1f1f;
+    padding: 30px 40px;
+    border-radius: 16px;
+    width: 320px;
+    max-width: 90vw;
+    color: #eee;
+    box-shadow: 0 0 30px #0ff8;
+    position: relative;
+  }
+  .modal h2 {
+    margin-top: 0;
+    color: #0ff;
+    font-weight: 700;
+  }
+  .modal label {
+    display: block;
+    margin: 15px 0 5px;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .modal input {
+    width: 100%;
+    padding: 9px 10px;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+    background-color: #121212;
+    color: #eee;
+  }
+  .modal input:focus {
+    outline: 2px solid #0ff;
+  }
+  .modal button {
+    width: 100%;
+    margin-top: 20px;
+    background-color: #0ff;
+    border: none;
+    color: #121212;
+    font-weight: 700;
+    font-size: 1rem;
+    border-radius: 10px;
+    padding: 10px 0;
+    transition: background-color 0.3s ease;
+  }
+  .modal button:hover {
+    background-color: #08c;
+    color: #eee;
+  }
+  .modal .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    color: #0ff;
+    cursor: pointer;
+    font-weight: 700;
+  }
+  .switch-auth {
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: #0ff;
+    text-align: center;
+    cursor: pointer;
+  }
+  .switch-auth:hover {
+    text-decoration: underline;
+  }
+  /* Scrollbar for most sold horizontal */
+  .most-sold-list::-webkit-scrollbar {
+    height: 7px;
+  }
+  .most-sold-list::-webkit-scrollbar-thumb {
+    background: #0ff8;
+    border-radius: 10px;
+  }
+  .most-sold-list::-webkit-scrollbar-track {
+    background: #121212;
+  }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    header {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+    nav {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    .products-container {
+      grid-template-columns: repeat(auto-fit,minmax(140px,1fr));
+    }
+    #cart-sidebar {
+      width: 90vw;
+    }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Loja Dark</h1>
+  <nav>
+    <button id="login-btn">Login</button>
+    <button id="register-btn">Inscrever-se</button>
+  </nav>
+</header>
+
+<!-- Carousel -->
+<div class="carousel-container" aria-label="Carrossel de imagens">
+  <div class="carousel" id="carousel">
+    <img src="Flip6_banner00_desktop.png" alt="Promoção 1" />
+    <img src="images.jpg" alt="Promoção 2" />
+    <img src="banner xiaomi 940x380.png" alt="Promoção 3" />
+  </div>
+  <div class="carousel-buttons" id="carousel-buttons">
+    <button aria-label="Slide 1" class="active" data-index="0"></button>
+    <button aria-label="Slide 2" data-index="1"></button>
+    <button aria-label="Slide 3" data-index="2"></button>
+  </div>
+</div>
+
+<!-- Brands row -->
+<div class="brands-row" id="brands-row" aria-label="Marcas">
+  <!-- Brand logos will be inserted dynamically -->
+</div>
+
+<!-- Products display -->
+<section class="products-container" id="products-container" aria-label="Produtos">
+  <!-- Product cards inserted dynamically -->
+</section>
+
+<!-- Most Sold Items -->
+<section class="most-sold-section" aria-label="Itens mais vendidos">
+  <h2 class="most-sold-title">Itens Mais Vendidos</h2>
+  <div class="most-sold-list" id="most-sold-list">
+    <!-- Most sold products inserted dynamically -->
+  </div>
+</section>
+
+<!-- Cart button -->
+<button title="Carrinho" id="cart-btn" aria-expanded="false" aria-controls="cart-sidebar">
+  🛒
+  <span id="cart-count" aria-live="polite" aria-atomic="true">0</span>
+</button>
+
+<!-- Cart sidebar -->
+<aside id="cart-sidebar" aria-label="Carrinho de compras" aria-hidden="true">
+  <button id="cart-close-btn" aria-label="Fechar carrinho">×</button>
+  <h2>Seu Carrinho</h2>
+  <div id="cart-items">
+    <p id="cart-empty">Seu carrinho está vazio.</p>
+  </div>
+</aside>
+
+<!-- Login Modal -->
+<div class="modal-overlay" id="login-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="login-title">
+  <div class="modal">
+    <button class="close-btn" aria-label="Fechar" id="login-close-btn">×</button>
+    <h2 id="login-title">Login</h2>
+    <form id="login-form" novalidate>
+      <label for="login-email">Email</label>
+      <input type="email" id="login-email" name="email" placeholder="exemplo@dominio.com" required />
+      <label for="login-password">Senha</label>
+      <input type="password" id="login-password" name="password" placeholder="Sua senha" required minlength="6" />
+      <button type="submit">Entrar</button>
+      <div class="switch-auth" id="to-register">Não tem conta? Inscreva-se</div>
+    </form>
+  </div>
+</div>
+
+<!-- Register Modal -->
+<div class="modal-overlay" id="register-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="register-title">
+  <div class="modal">
+    <button class="close-btn" aria-label="Fechar" id="register-close-btn">×</button>
+    <h2 id="register-title">Inscrever-se</h2>
+    <form id="register-form" novalidate>
+      <label for="register-email">Email</label>
+      <input type="email" id="register-email" name="email" placeholder="exemplo@dominio.com" required />
+      <label for="register-password">Senha</label>
+      <input type="password" id="register-password" name="password" placeholder="Sua senha" required minlength="6" />
+      <label for="register-password-confirm">Confirmar senha</label>
+      <input type="password" id="register-password-confirm" name="password-confirm" placeholder="Confirme a senha" required minlength="6" />
+      <button type="submit">Criar conta</button>
+      <div class="switch-auth" id="to-login">Já tem conta? Login</div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Data for brands and products
+  const brands = [
+    { id: 'iphone', name: 'Iphone', logo: 'iphone logo.jpg' },
+    { id: 'motorola', name: 'Motorola', logo: 'https://seeklogo.com/images/A/adidas-logo-B6F46C05DE-seeklogo.com.png' },
+    { id: 'redmi', name: 'Redmi', logo: 'MI.png' },
+    { id: 'poco', name: 'Poco', logo: 'poco.png' },
+    { id: 'Motorola', name: 'Motorola', logo: 'motorola.png' }
+  ];
+
+  const products = [
+    { id: 1, name: 'Tênis Nike Air Max', price: 600, brand: 'iphone', image: 'iphone 16.webp', sold: 300 },
+    { id: 2, name: 'Tênis Adidas Ultraboost', price: 700, brand: 'motorola', image: 'motorola edge pro. webp', sold: 280 },
+    { id: 3, name: 'Tênis Puma RS-X', price: 450, brand: 'redmi', image: 'redmi 11 pro.jpg', sold: 220 },
+    { id: 4, name: 'Tênis Reebok Classic', price: 540, brand: 'poco', image: 'https://images.unsplash.com/photo-1560072810-26c16b3e2d49?auto=format&fit=crop&w=400&q=80', sold: 190 },
+    { id: 5, name: 'Tênis New Balance 574', price: 520, brand: 'Rog Phone', image: 'https://images.unsplash.com/photo-1625409666732-5b782b58f979?auto=format&fit=crop&w=400&q=80', sold: 260 },
+    { id: 6, name: 'Tênis Nike Revolution', price: 490, brand: 'iphone', image: 'https://images.unsplash.com/photo-1600185369425-7b800e24148e?auto=format&fit=crop&w=400&q=80', sold: 180 },
+    { id: 7, name: 'Tênis Adidas Gazelle', price: 430, brand: 'motorola', image: 'https://images.unsplash.com/photo-1584570296157-03421556def2?auto=format&fit=crop&w=400&q=80', sold: 140 },
+    { id: 8, name: 'Tênis Puma Cali', price: 505, brand: 'redmi', image: 'https://images.unsplash.com/photo-1532922639890-b4afcae7ffba?auto=format&fit=crop&w=400&q=80', sold: 160 },
+  ];
+
+  // Elements references
+  const brandsRow = document.getElementById('brands-row');
+  const productsContainer = document.getElementById('products-container');
+  const mostSoldList = document.getElementById('most-sold-list');
+  const cartBtn = document.getElementById('cart-btn');
+  const cartSidebar = document.getElementById('cart-sidebar');
+  const cartCloseBtn = document.getElementById('cart-close-btn');
+  const cartItemsContainer = document.getElementById('cart-items');
+  const cartCountSpan = document.getElementById('cart-count');
+
+  let cart = [];
+  let filteredBrand = null;
+
+  // Render brands function
+  function renderBrands() {
+    brands.forEach(brand => {
+      const img = document.createElement('img');
+      img.src = brand.logo;
+      img.alt = brand.name;
+      img.classList.add('brand-logo');
+      img.tabIndex = 0;
+      img.setAttribute('role', 'button');
+      img.setAttribute('aria-pressed', 'false');
+      img.addEventListener('click', () => {
+        if (filteredBrand === brand.id) {
+          filteredBrand = null;
+        } else {
+          filteredBrand = brand.id;
+        }
+        setActiveBrand();
+        renderProducts();
+      });
+      img.addEventListener('keydown', ev => {
+        if (ev.key === 'Enter' || ev.key === ' ') {
+          ev.preventDefault();
+          img.click();
+        }
+      });
+      brandsRow.appendChild(img);
+    });
+  }
+  // Update brand logos active state
+  function setActiveBrand() {
+    const brandLogos = brandsRow.querySelectorAll('.brand-logo');
+    brandLogos.forEach((logo, i) => {
+      if (brands[i].id === filteredBrand) {
+        logo.classList.add('active');
+        logo.setAttribute('aria-pressed', 'true');
+      } else {
+        logo.classList.remove('active');
+        logo.setAttribute('aria-pressed', 'false');
+      }
+    });
+  }
+  // Render products filtered or all
+  function renderProducts() {
+    productsContainer.innerHTML = '';
+    let prodsToShow = filteredBrand ? products.filter(p => p.brand === filteredBrand) : products;
+    if(prodsToShow.length === 0) {
+      const infoNo = document.createElement('p');
+      infoNo.style.textAlign = 'center';
+      infoNo.style.width = '100%';
+      infoNo.style.color = '#aaa';
+      infoNo.style.fontStyle = 'italic';
+      infoNo.textContent = 'Nenhum produto encontrado';
+      productsContainer.appendChild(infoNo);
+      return;
+    }
+    prodsToShow.forEach(p => {
+      const card = document.createElement('article');
+      card.classList.add('product-card');
+
+      const img = document.createElement('img');
+      img.classList.add('product-image');
+      img.src = p.image;
+      img.alt = p.name;
+
+      const info = document.createElement('div');
+      info.classList.add('product-info');
+
+      const name = document.createElement('h3');
+      name.classList.add('product-name');
+      name.textContent = p.name;
+
+      const price = document.createElement('div');
+      price.classList.add('product-price');
+      price.textContent = 'R$ ' + p.price.toFixed(2).replace('.', ',');
+
+      const btn = document.createElement('button');
+      btn.classList.add('buy-btn');
+      btn.textContent = 'Comprar';
+      btn.addEventListener('click', () => addToCart(p.id));
+
+      info.appendChild(name);
+      info.appendChild(price);
+      info.appendChild(btn);
+
+      card.appendChild(img);
+      card.appendChild(info);
+
+      productsContainer.appendChild(card);
+    });
+  }
+
+  // Render most sold products in horizontal row
+  function renderMostSold() {
+    mostSoldList.innerHTML = '';
+    let sorted = [...products].sort((a,b)=> b.sold - a.sold).slice(0,5);
+    sorted.forEach(p => {
+      const div = document.createElement('div');
+      div.classList.add('most-sold-item');
+      div.tabIndex = 0;
+      div.setAttribute('role','button');
+      div.setAttribute('aria-label', `Ver produtos da marca ${brands.find(b => b.id === p.brand).name}`);
+      div.addEventListener('click', () => {
+        filteredBrand = p.brand;
+        setActiveBrand();
+        renderProducts();
+        window.scrollTo({top: productsContainer.offsetTop - 80, behavior: 'smooth'});
+      });
+      div.addEventListener('keydown', ev => {
+        if(ev.key === 'Enter' || ev.key === ' ') {
+          ev.preventDefault();
+          div.click();
+        }
+      });
+
+      const img = document.createElement('img');
+      img.classList.add('most-sold-image');
+      img.src = p.image;
+      img.alt = p.name;
+
+      const name = document.createElement('div');
+      name.classList.add('most-sold-name');
+      name.textContent = p.name;
+
+      div.appendChild(img);
+      div.appendChild(name);
+
+      mostSoldList.appendChild(div);
+    });
+  }
+
+  // Cart related functions
+  function addToCart(productId) {
+    const product = products.find(p => p.id === productId);
+    if(!product) return;
+    const cartItem = cart.find(item => item.id === productId);
+    if(cartItem) {
+      cartItem.quantity++;
+    } else {
+      cart.push({ id: product.id, quantity: 1 });
+    }
+    updateCart();
+  }
+  function removeFromCart(productId) {
+    cart = cart.filter(item => item.id !== productId);
+    updateCart();
+  }
+  function updateCart() {
+    cartCountSpan.textContent = cart.reduce((acc, item) => acc + item.quantity, 0);
+    cartItemsContainer.innerHTML = '';
+    if(cart.length === 0) {
+      cartItemsContainer.appendChild(document.getElementById('cart-empty'));
+      cartSidebar.setAttribute('aria-hidden','true');
+    } else {
+      const cartFragment = document.createDocumentFragment();
+      cart.forEach(item => {
+        const product = products.find(p => p.id === item.id);
+        if(!product) return;
+
+        const div = document.createElement('div');
+        div.classList.add('cart-item');
+
+        const img = document.createElement('img');
+        img.src = product.image;
+        img.alt = product.name;
+
+        const infoDiv = document.createElement('div');
+        infoDiv.classList.add('cart-item-info');
+
+        const name = document.createElement('div');
+        name.classList.add('cart-item-name');
+        name.textContent = product.name;
+
+        const price = document.createElement('div');
+        price.classList.add('cart-item-price');
+        price.textContent = `R$ ${(product.price * item.quantity).toFixed(2).replace('.', ',')} (${item.quantity}x)`;
+
+        const removeBtn = document.createElement('button');
+        removeBtn.classList.add('cart-remove-btn');
+        removeBtn.setAttribute('aria-label', `Remover ${product.name} do carrinho`);
+        removeBtn.textContent = '×';
+        removeBtn.addEventListener('click', () => removeFromCart(product.id));
+
+        infoDiv.appendChild(name);
+        infoDiv.appendChild(price);
+        div.appendChild(img);
+        div.appendChild(infoDiv);
+        div.appendChild(removeBtn);
+
+        cartFragment.appendChild(div);
+      });
+      cartItemsContainer.appendChild(cartFragment);
+    }
+  }
+
+  // Cart sidebar toggle
+  cartBtn.addEventListener('click', () => {
+    if(cartSidebar.classList.contains('active')) {
+      closeCart();
+    } else {
+      openCart();
+    }
+  });
+  cartCloseBtn.addEventListener('click', closeCart);
+
+  function openCart() {
+    cartSidebar.classList.add('active');
+    cartSidebar.setAttribute('aria-hidden', 'false');
+    cartBtn.setAttribute('aria-expanded','true');
+  }
+  function closeCart() {
+    cartSidebar.classList.remove('active');
+    cartSidebar.setAttribute('aria-hidden', 'true');
+    cartBtn.setAttribute('aria-expanded','false');
+  }
+
+  // Carousel functionality
+  const carousel = document.getElementById('carousel');
+  const carouselButtons = document.getElementById('carousel-buttons').children;
+  let currentSlide = 0;
+  const totalSlides = carousel.children.length;
+
+  function showSlide(index){
+    if(index < 0) index = totalSlides-1;
+    if(index >= totalSlides) index = 0;
+    currentSlide = index;
+    carousel.style.transform = `translateX(-${index*100}%)`;
+    for(let i=0; i < carouselButtons.length; i++) {
+      if(i === index) {
+        carouselButtons[i].classList.add('active');
+      } else {
+        carouselButtons[i].classList.remove('active');
+      }
+    }
+  }
+  Array.from(carouselButtons).forEach(btn => {
+    btn.addEventListener('click', () => {
+      showSlide(Number(btn.dataset.index));
+    });
+  });
+  // Auto slide every 5 sec
+  setInterval(() => {
+    showSlide(currentSlide + 1);
+  }, 5000);
+
+  // Modal login/register
+  const loginModal = document.getElementById('login-modal');
+  const registerModal = document.getElementById('register-modal');
+  const loginBtn = document.getElementById('login-btn');
+  const registerBtn = document.getElementById('register-btn');
+  const loginCloseBtn = document.getElementById('login-close-btn');
+  const registerCloseBtn = document.getElementById('register-close-btn');
+  const toRegisterLink = document.getElementById('to-register');
+  const toLoginLink = document.getElementById('to-login');
+  const loginForm = document.getElementById('login-form');
+  const registerForm = document.getElementById('register-form');
+
+  loginBtn.addEventListener('click', () => {
+    loginModal.classList.add('active');
+    loginModal.setAttribute('aria-hidden','false');
+    registerModal.classList.remove('active');
+    registerModal.setAttribute('aria-hidden','true');
+  });
+  registerBtn.addEventListener('click', () => {
+    registerModal.classList.add('active');
+    registerModal.setAttribute('aria-hidden','false');
+    loginModal.classList.remove('active');
+    loginModal.setAttribute('aria-hidden','true');
+  });
+  loginCloseBtn.addEventListener('click', closeAllModals);
+  registerCloseBtn.addEventListener('click', closeAllModals);
+  toRegisterLink.addEventListener('click', () => {
+    loginModal.classList.remove('active');
+    loginModal.setAttribute('aria-hidden','true');
+    registerModal.classList.add('active');
+    registerModal.setAttribute('aria-hidden','false');
+  });
+  toLoginLink.addEventListener('click', () => {
+    registerModal.classList.remove('active');
+    registerModal.setAttribute('aria-hidden','true');
+    loginModal.classList.add('active');
+    loginModal.setAttribute('aria-hidden','false');
+  });
+
+  function closeAllModals() {
+    loginModal.classList.remove('active');
+    registerModal.classList.remove('active');
+    loginModal.setAttribute('aria-hidden','true');
+    registerModal.setAttribute('aria-hidden','true');
+  }
+  // Close modals on outside click
+  loginModal.addEventListener('click', (e) => {
+    if(e.target === loginModal) closeAllModals();
+  });
+  registerModal.addEventListener('click', (e) => {
+    if(e.target === registerModal) closeAllModals();
+  });
+
+  // Login form submit
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = loginForm.email.value.trim();
+    const password = loginForm.password.value.trim();
+    if(!email || !password) {
+      alert('Por favor preencha os campos corretamente.');
+      return;
+    }
+    alert(`Login feito com sucesso para: ${email}`);
+    loginForm.reset();
+    closeAllModals();
+  });
+  // Register form submit
+  registerForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = registerForm.email.value.trim();
+    const password = registerForm.password.value.trim();
+    const passwordConfirm = registerForm['password-confirm'].value.trim();
+    if(!email || !password || !passwordConfirm) {
+      alert('Por favor preencha todos os campos.');
+      return;
+    }
+    if(password !== passwordConfirm) {
+      alert('As senhas não coincidem.');
+      return;
+    }
+    alert(`Conta criada com sucesso para: ${email}`);
+    registerForm.reset();
+    closeAllModals();
+  });
+
+  // Initial rendering
+  renderBrands();
+  setActiveBrand();
+  renderProducts();
+  renderMostSold();
+  updateCart();
+  showSlide(0);
+</script>
+</body>
+</html>
+
